@@ -95,7 +95,7 @@ function buildBodyFromFlags(
   }
 
   // Apply explicit --param values (useful for fields with unusual names or
-  // for overriding a flag).
+  // for overriding a flag). Array/object literals are parsed as JSON.
   for (const raw of options.param ?? []) {
     const separator = raw.indexOf('=');
     if (separator === -1) {
@@ -103,8 +103,8 @@ function buildBodyFromFlags(
       process.exit(2);
     }
     const key = raw.slice(0, separator);
-    const value = raw.slice(separator + 1);
-    body[key] = value;
+    const rawValue = raw.slice(separator + 1);
+    body[key] = parseParamValue(rawValue);
   }
 
   // Positional query maps to the first empty body field, falling back to a
@@ -128,6 +128,24 @@ function buildBodyFromFlags(
   }
 
   return body;
+}
+
+function parseParamValue(value: string): unknown {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  if (value === 'null') return null;
+  if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
+  if (
+    (value.startsWith('[') && value.endsWith(']')) ||
+    (value.startsWith('{') && value.endsWith('}'))
+  ) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }
+  return value;
 }
 
 function formatError(error: unknown): string {

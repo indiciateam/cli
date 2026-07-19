@@ -16,10 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dynamic feature list loaded from `https://api.indicia.app/openapi` with a static fallback.
 - Multipart/form-data request support for media-based searches.
 - Nested arrays and objects are now fully expanded in formatted terminal output.
+- `--param` values that look like JSON arrays/objects/numbers/booleans are parsed automatically.
+- `search --help` only shows flags for the requested feature, keeping the default help uncluttered.
 
 ### Changed
 
 - CLI descriptions and documentation now describe the tool as a CLI without alluding to specific use cases.
+
+### Fixed
+
+- API error objects are no longer rendered as `[object Object]`.
+- Multipart file uploads now include the correct MIME type based on file extension.
+- Streaming endpoints that emit a terminal data-only event now surface the final `data` payload correctly.
 
 ## [0.1.0] - 2026-07-19
 

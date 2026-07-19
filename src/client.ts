@@ -111,6 +111,25 @@ export async function search(options: SearchOptions): Promise<SearchResult> {
   return data as SearchResult;
 }
 
+function mimeTypeForFile(path: string): string {
+  const ext = path.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    case 'gif':
+      return 'image/gif';
+    case 'webp':
+      return 'image/webp';
+    case 'mp4':
+      return 'video/mp4';
+    default:
+      return 'application/octet-stream';
+  }
+}
+
 async function buildMultipartRequest(
   feature: Feature,
   body: Record<string, unknown>,
@@ -128,7 +147,8 @@ async function buildMultipartRequest(
       const path = resolve(value);
       const file = await readFile(path);
       const filename = basename(path);
-      data.append(field, new Blob([file]), filename);
+      const type = mimeTypeForFile(path);
+      data.append(field, new Blob([file], { type }), filename);
     } else if (value !== undefined) {
       data.append(field, String(value));
     }
@@ -185,7 +205,11 @@ async function handleStream(
       events.push(event);
       onStreamEvent?.(event);
 
-      if (event.event === 'result' || event.event === 'all') {
+      if (
+        event.event === 'result' ||
+        event.event === 'all' ||
+        isTerminalDataEvent(event)
+      ) {
         terminalEvent = event;
       }
     }
@@ -197,7 +221,11 @@ async function handleStream(
     for (const event of chunkEvents) {
       events.push(event);
       onStreamEvent?.(event);
-      if (event.event === 'result' || event.event === 'all') {
+      if (
+        event.event === 'result' ||
+        event.event === 'all' ||
+        isTerminalDataEvent(event)
+      ) {
         terminalEvent = event;
       }
     }
@@ -218,6 +246,10 @@ async function handleStream(
   }
 
   if (terminalEvent) {
+    const terminalData = terminalEvent.data as { data?: unknown } | undefined;
+    if (isTerminalDataEvent(terminalEvent) && 'data' in (terminalData ?? {})) {
+      return { success: true, data: terminalData?.data, events };
+    }
     return { success: true, data: terminalEvent.data, events };
   }
 
@@ -264,6 +296,16 @@ function parseSseLines(lines: string[]): SseEvent[] {
   }
 
   return events;
+}
+
+function isTerminalDataEvent(event: SseEvent): boolean {
+  return (
+    !event.event &&
+    typeof event.data === 'object' &&
+    event.data !== null &&
+    'success' in event.data &&
+    event.data.success === true
+  );
 }
 
 function parseJsonSafe(text: string): unknown {
