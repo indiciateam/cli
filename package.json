@@ -1,0 +1,67 @@
+{
+  "name": "@indiciaosint/cli",
+  "version": "0.1.0",
+  "description": "CLI for Indicia OSINT automation",
+  "type": "module",
+  "packageManager": "pnpm@9.4.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "indicia": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    ".agents"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "chmod +x dist/index.js",
+    "dev": "tsx src/index.ts",
+    "check-types": "tsc --noEmit",
+    "check": "biome check . --write",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.0",
+    "@types/node": "^22.15.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "author": "Indicia Team",
+  "license": "MIT",
+  "homepage": "https://indicia.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/indiciateam/indicia-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/indiciateam/indicia-cli/issues"
+  },
+  "keywords": [
+    "indicia",
+    "osint",
+    "cli",
+    "automation",
+    "search"
+  ]
+}
