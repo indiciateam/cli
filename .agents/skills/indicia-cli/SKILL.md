@@ -77,7 +77,7 @@ indicia search socials/username octocat
 | Flag | Description |
 |------|-------------|
 | `--body '<json>'` | Send a raw JSON body. |
-| `-p, --param <key=value>` | Set a body field (repeatable). |
+| `-p, --param <key=value>` | Set a body field (repeatable). JSON arrays/objects are parsed automatically. |
 | `-y, --yes` | Skip the credit cost confirmation prompt. |
 | `-j, --json` | Emit JSON to stdout. |
 | `-o, --output <file>` | Write JSON output to a file. |
@@ -90,8 +90,11 @@ indicia search socials/username octocat
 Endpoints expose their body fields as CLI flags. Prefer flags over `--body`:
 
 ```bash
-# Person search
+# Person search (US state abbreviation)
 indicia search intelligence/person --name "John Doe" --state CA
+
+# Address search (US state abbreviation)
+indicia search intelligence/address --address1 "123 Main St" --city "New York" --state NY --zip 10001
 
 # Crypto address analysis
 indicia search tools/crypto --address 0xdAC17F958D2ee523a2206206994597C13D831ec7 --network ethereum
@@ -101,6 +104,18 @@ indicia search tools/intelx --storage-id <id> --bucket leaks.public
 
 # VirusTotal download
 indicia search tools/virustotal.download --id <file-id>
+
+# Port scan with ping disabled
+indicia search infrastructure/portscan scanme.nmap.org --param options='{"skipPing":true}'
+
+# Hudson Rock domain lookup
+indicia search intelligence/hudsonrock bcps.org --type domain
+
+# Web databases password search
+indicia search intelligence/web-dbs Kennygocrazyyy \
+  --param services='["cloudsint","intelligencex.identityportal","leakcheck","snusbase"]' \
+  --param leakCheckType=password \
+  --param snusbaseType=password
 ```
 
 Use `--param key=value` or `--body` when no dedicated flag exists for a field.
