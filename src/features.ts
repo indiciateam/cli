@@ -542,11 +542,18 @@ function openApiFeatureFromPath(
     : undefined;
   const properties = flattenProperties(requestSchema);
   const bodyFields = Object.keys(properties);
+  const fallback = fallbackFeatures.find(f => f.path === path);
   const flags: Record<string, FeatureFlag> = {};
   for (const field of bodyFields) {
+    const openApiDescription = schemaDescription(field, properties[field]);
+    const fallbackDescription = fallback?.flags?.[field]?.description;
+    const description =
+      properties[field]?.description && openApiDescription
+        ? openApiDescription
+        : (fallbackDescription ?? openApiDescription);
     flags[field] = {
       name: kebabCase(field),
-      description: schemaDescription(field, properties[field]),
+      description,
       format: properties[field]?.format,
     };
   }

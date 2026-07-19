@@ -52,7 +52,7 @@ export async function searchCommand(
   });
 
   if (!result.success) {
-    writeOutput({ success: false, error: result.error }, options);
+    writeOutput({ success: false, error: formatError(result.error) }, options);
     process.exit(3);
   }
 
@@ -85,10 +85,9 @@ function buildBodyFromFlags(
   options: SearchCommandOptions,
 ): Record<string, unknown> {
   const body: Record<string, unknown> = {};
-  const flags = feature.flags ?? {};
 
   // Apply known flags.
-  for (const field of Object.keys(flags)) {
+  for (const field of feature.bodyFields ?? []) {
     const value = options[field];
     if (value !== undefined) {
       body[field] = value;
@@ -108,7 +107,8 @@ function buildBodyFromFlags(
     body[key] = value;
   }
 
-  // Positional query maps to the primary body field.
+  // Positional query maps to the first empty body field, falling back to a
+  // generic `query` field.
   if (query !== undefined) {
     const primaryField =
       feature.bodyFields?.find(f => body[f] === undefined) ??
@@ -128,6 +128,16 @@ function buildBodyFromFlags(
   }
 
   return body;
+}
+
+function formatError(error: unknown): string {
+  if (typeof error === 'string') return error;
+  if (error === null || error === undefined) return 'Unknown error';
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
 }
 
 async function confirmSearch(

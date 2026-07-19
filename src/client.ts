@@ -17,10 +17,20 @@ export class IndiciaApiError extends Error {
   ) {
     const message =
       typeof body === 'object' && body !== null && 'error' in body
-        ? String((body as { error?: unknown }).error)
+        ? formatApiError((body as { error?: unknown }).error)
         : `${status} ${statusText}`;
     super(message);
     this.name = 'IndiciaApiError';
+  }
+}
+
+function formatApiError(error: unknown): string {
+  if (typeof error === 'string') return error;
+  if (error === null || error === undefined) return 'Unknown API error';
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
   }
 }
 
