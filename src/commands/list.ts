@@ -1,4 +1,4 @@
-import { type Feature, kebabCase, listByCategory } from '../features.js';
+import { type Feature, listByCategory } from '../features.js';
 import { type OutputOptions, writeOutput } from '../output.js';
 
 export async function listCommand(
@@ -18,7 +18,7 @@ export async function listCommand(
           version: f.version,
           streaming: f.streaming,
           description: f.description,
-          bodyFields: f.bodyFields,
+          flags: Object.values(f.flags ?? {}).map(flag => flag.name),
           priceKey: f.priceKey,
         })),
       },
@@ -35,8 +35,11 @@ export async function listCommand(
     for (const f of list) {
       const alias = `${f.category}/${f.name}`;
       const streamingFlag = f.streaming ? ' [streaming]' : '';
-      const bodyHint = f.bodyFields?.length
-        ? ` [flags: ${f.bodyFields.map(k => `--${kebabCase(k)}`).join(', ')}]`
+      const flagNames = Object.values(f.flags ?? {}).map(
+        flag => `--${flag.name}`,
+      );
+      const bodyHint = flagNames.length
+        ? ` [flags: ${flagNames.join(', ')}]`
         : '';
       lines.push(
         `  ${alias.padEnd(36)} ${f.description}${streamingFlag}${bodyHint}`,

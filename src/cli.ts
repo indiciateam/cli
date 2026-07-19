@@ -4,7 +4,7 @@ import { infoCommand } from './commands/info.js';
 import { listCommand } from './commands/list.js';
 import { searchCommand } from './commands/search.js';
 import { ConfigError, loadConfig } from './config.js';
-import { type Feature, findFeature, kebabCase } from './features.js';
+import { type Feature, findFeature } from './features.js';
 import { writeError } from './output.js';
 
 const require = createRequire(import.meta.url);
@@ -81,13 +81,19 @@ function extractFeatureArg(argv: string[]): string | undefined {
 
 function registerFeatureOptions(search: Command, feature: Feature): void {
   const existing = new Set(search.options.map(o => o.long));
-  for (const field of feature.bodyFields ?? []) {
-    const flag = kebabCase(field);
-    const long = `--${flag}`;
+  for (const flag of Object.values(feature.flags ?? {})) {
+    const long = `--${flag.name}`;
     if (existing.has(long)) continue;
-    const description =
-      feature.flags?.[field]?.description ?? `Request body field: ${field}`;
-    search.option(`${long} <value>`, description);
+    if (flag.type === 'boolean') {
+      search.option(long, flag.description);
+    } else if (flag.choices && flag.choices.length > 0) {
+      search.option(
+        `${long} <value>`,
+        `${flag.description} (choices: ${flag.choices.join(', ')})`,
+      );
+    } else {
+      search.option(`${long} <value>`, flag.description);
+    }
     existing.add(long);
   }
 }

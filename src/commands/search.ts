@@ -1,7 +1,12 @@
 import { createInterface } from 'node:readline/promises';
 import type { SseEvent } from '../client.js';
 import { getInfo, getPricing, search } from '../client.js';
-import { type Feature, findFeature } from '../features.js';
+import {
+  camelCase,
+  type Feature,
+  type FeatureFlag,
+  findFeature,
+} from '../features.js';
 import { type OutputOptions, writeError, writeOutput } from '../output.js';
 
 export interface SearchCommandOptions extends OutputOptions {
@@ -86,12 +91,14 @@ function buildBodyFromFlags(
 ): Record<string, unknown> {
   const body: Record<string, unknown> = {};
 
-  // Apply known flags.
-  for (const field of feature.bodyFields ?? []) {
-    const value = options[field];
-    if (value !== undefined) {
-      body[field] = value;
-    }
+  // Apply known feature flags, including nested object fields (e.g.
+  // portscan's `options.skipPing` becomes `--skip-ping`).
+  for (const flag of Object.values(feature.flags ?? {})) {
+    const key = flag.optionKey ?? camelCase(flag.name);
+    const rawValue = options[key];
+    if (rawValue === undefined) continue;
+    const value = coerceFlagValue(rawValue, flag.type);
+    setPath(body, flag.path ?? [flag.name], value);
   }
 
   // Apply explicit --param values (useful for fields with unusual names or
@@ -107,12 +114,14 @@ function buildBodyFromFlags(
     body[key] = parseParamValue(rawValue);
   }
 
-  // Positional query maps to the first empty body field, falling back to a
-  // generic `query` field.
+  // Positional query maps to the first empty primitive body field, falling
+  // back to a generic `query` field.
   if (query !== undefined) {
     const primaryField =
-      feature.bodyFields?.find(f => body[f] === undefined) ??
-      feature.bodyFields?.[0] ??
+      feature.bodyFields?.find(
+        f => body[f] === undefined && feature.flags?.[f]?.type !== 'object',
+      ) ??
+      feature.bodyFields?.find(f => feature.flags?.[f]?.type !== 'object') ??
       'query';
     if (body[primaryField] === undefined) {
       body[primaryField] = query;
@@ -128,6 +137,31 @@ function buildBodyFromFlags(
   }
 
   return body;
+}
+
+function setPath(
+  target: Record<string, unknown>,
+  path: string[],
+  value: unknown,
+): void {
+  let current: Record<string, unknown> = target;
+  for (let i = 0; i < path.length - 1; i++) {
+    const key = path[i];
+    if (typeof current[key] !== 'object' || current[key] === null) {
+      current[key] = {};
+    }
+    current = current[key] as Record<string, unknown>;
+  }
+  current[path[path.length - 1]] = value;
+}
+
+function coerceFlagValue(value: unknown, type: FeatureFlag['type']): unknown {
+  if (type === 'boolean') return value;
+  if (type === 'number' && typeof value === 'string') {
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+  return value;
 }
 
 function parseParamValue(value: string): unknown {
@@ -151,6 +185,26 @@ function parseParamValue(value: string): unknown {
 function formatError(error: unknown): string {
   if (typeof error === 'string') return error;
   if (error === null || error === undefined) return 'Unknown error';
+  if (typeof error === 'object') {
+    const e = error as Record<string, unknown>;
+    if ('status' in e) {
+      const status = e.status;
+      const value = e.value;
+      const statusText =
+        typeof status === 'number' ? `status ${status}` : String(status);
+      let msg = `API returned ${statusText}`;
+      const valueIsEmptyObject =
+        typeof value === 'object' &&
+        value !== null &&
+        Object.keys(value).length === 0;
+      if (value !== undefined && !valueIsEmptyObject) {
+        msg += `: ${JSON.stringify(value)}`;
+      } else if (status === 500) {
+        msg += ' (internal server error)';
+      }
+      return msg;
+    }
+  }
   try {
     return JSON.stringify(error);
   } catch {

@@ -27,6 +27,26 @@ export class IndiciaApiError extends Error {
 function formatApiError(error: unknown): string {
   if (typeof error === 'string') return error;
   if (error === null || error === undefined) return 'Unknown API error';
+  if (typeof error === 'object') {
+    const e = error as Record<string, unknown>;
+    if ('status' in e) {
+      const status = e.status;
+      const value = e.value;
+      const statusText =
+        typeof status === 'number' ? `status ${status}` : String(status);
+      let msg = `API returned ${statusText}`;
+      const valueIsEmptyObject =
+        typeof value === 'object' &&
+        value !== null &&
+        Object.keys(value).length === 0;
+      if (value !== undefined && !valueIsEmptyObject) {
+        msg += `: ${JSON.stringify(value)}`;
+      } else if (status === 500) {
+        msg += ' (internal server error)';
+      }
+      return msg;
+    }
+  }
   try {
     return JSON.stringify(error);
   } catch {

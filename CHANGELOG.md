@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-07-19
+
+### Added
+
+- Nested object request body fields are now flattened into individual CLI flags (e.g. `infrastructure/portscan --skip-ping`).
+- Boolean body fields are exposed as toggle flags that do not require a value.
+- `indicia list` now shows the actual CLI flag names instead of raw body field names.
+
+### Fixed
+
+- API responses that report an internal error as `{ status: 500, value: {} }` now render a clean message instead of raw JSON.
+
 ## [0.2.0] - 2026-07-19
 
 ### Added

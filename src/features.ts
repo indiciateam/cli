@@ -6,8 +6,12 @@ export type FeatureCategory =
 
 export interface FeatureFlag {
   name: string;
+  optionKey?: string;
   description: string;
   format?: string;
+  type?: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  path?: string[];
+  choices?: unknown[];
 }
 
 export interface Feature {
@@ -368,9 +372,17 @@ const fallbackFeatures: Feature[] = [
     priceKey: 'intelx',
     bodyFields: ['storageId', 'bucket', 'systemId'],
     flags: {
-      storageId: { name: 'storage-id', description: 'IntelX storage ID' },
+      storageId: {
+        name: 'storage-id',
+        optionKey: 'storageId',
+        description: 'IntelX storage ID',
+      },
       bucket: { name: 'bucket', description: 'IntelX bucket' },
-      systemId: { name: 'system-id', description: 'IntelX system ID' },
+      systemId: {
+        name: 'system-id',
+        optionKey: 'systemId',
+        description: 'IntelX system ID',
+      },
     },
   },
   {
@@ -495,6 +507,47 @@ function flattenProperties(
   return out;
 }
 
+export function camelCase(input: string): string {
+  return input.replace(/-([a-z])/g, (_, letter: string) =>
+    letter.toUpperCase(),
+  );
+}
+
+function collectFlags(
+  schema: OpenApiSchema | undefined,
+  flags: Record<string, FeatureFlag>,
+  path: string[] = [],
+): void {
+  if (!schema) return;
+  const properties = schema.properties ?? {};
+  for (const [key, value] of Object.entries(properties)) {
+    const currentPath = [...path, key];
+    const hasNestedObjectProperties =
+      value.type === 'object' &&
+      value.properties &&
+      Object.keys(value.properties).length > 0;
+    if (hasNestedObjectProperties) {
+      collectFlags(value, flags, currentPath);
+      continue;
+    }
+    const flagName = kebabCase(key);
+    const flagKey = currentPath.join('.');
+    const type = (value.type as FeatureFlag['type']) ?? 'string';
+    flags[flagKey] = {
+      name: flagName,
+      optionKey: camelCase(flagName),
+      description: schemaDescription(flagKey, value),
+      format: value.format,
+      type,
+      path: currentPath,
+      choices: value.enum,
+    };
+  }
+  for (const sub of schema.anyOf ?? schema.oneOf ?? []) {
+    collectFlags(sub, flags, path);
+  }
+}
+
 function schemaDescription(
   key: string,
   property: OpenApiSchema | undefined,
@@ -544,18 +597,12 @@ function openApiFeatureFromPath(
   const bodyFields = Object.keys(properties);
   const fallback = fallbackFeatures.find(f => f.path === path);
   const flags: Record<string, FeatureFlag> = {};
-  for (const field of bodyFields) {
-    const openApiDescription = schemaDescription(field, properties[field]);
-    const fallbackDescription = fallback?.flags?.[field]?.description;
-    const description =
-      properties[field]?.description && openApiDescription
-        ? openApiDescription
-        : (fallbackDescription ?? openApiDescription);
-    flags[field] = {
-      name: kebabCase(field),
-      description,
-      format: properties[field]?.format,
-    };
+  collectFlags(requestSchema, flags);
+  for (const flag of Object.values(flags)) {
+    const fallbackFlag = fallback?.flags?.[flag.path?.join('.') ?? flag.name];
+    if (fallbackFlag?.description) {
+      flag.description = fallbackFlag.description;
+    }
   }
 
   const priceKey = op.operationId
