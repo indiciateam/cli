@@ -60,6 +60,15 @@ indicia search tools/intelx --storage-id <id> --bucket leaks.public
 indicia search tools/virustotal.download --id <file-id>
 ```
 
+### Media uploads
+
+Image-based searches accept a file path for the `--media` flag. The CLI reads the file and sends it as `multipart/form-data`:
+
+```bash
+indicia search intelligence/facial --media ./suspect.jpg
+indicia search intelligence/geolocation --media ./photo.jpg --location-hint "NYC" --model enhanced
+```
+
 For fields without a dedicated flag, or for advanced use, pass `--param key=value` or a raw JSON body:
 
 ```bash

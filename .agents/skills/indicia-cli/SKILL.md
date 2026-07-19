@@ -105,6 +105,15 @@ indicia search tools/virustotal.download --id <file-id>
 
 Use `--param key=value` or `--body` when no dedicated flag exists for a field.
 
+### Media uploads
+
+Image-based searches accept a file path for the `--media` flag. The CLI reads the file and sends it as `multipart/form-data`:
+
+```bash
+indicia search intelligence/facial --media ./suspect.jpg
+indicia search intelligence/geolocation --media ./photo.jpg --location-hint "NYC" --model enhanced
+```
+
 ## Streaming searches
 
 Some endpoints (GitHub, Roblox, TikTok, Discord, and the v2 username search) stream Server-Sent Events. The CLI:

@@ -77,15 +77,21 @@ export function buildCli(features: Feature[]): Command {
   // Expose every known body field as a CLI flag so multi-property searches
   // work without forcing users to hand-write JSON.
   const dynamicFields = new Set<string>();
+  const fieldDescriptions: Record<string, string> = {};
   for (const feature of features) {
-    for (const field of feature.bodyFields ?? []) {
+    for (const [field, flag] of Object.entries(feature.flags ?? {})) {
       dynamicFields.add(field);
+      if (!fieldDescriptions[field] && flag.description) {
+        fieldDescriptions[field] = flag.description;
+      }
     }
   }
   for (const field of dynamicFields) {
     const flag = kebabCase(field);
     if (RESERVED_SEARCH_OPTIONS.has(field)) continue;
-    search.option(`--${flag} <value>`, `Request body field: ${field}`);
+    const description =
+      fieldDescriptions[field] ?? `Request body field: ${field}`;
+    search.option(`--${flag} <value>`, description);
   }
 
   search.action(async (feature, query, options) => {
