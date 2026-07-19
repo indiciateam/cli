@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import { CommanderError } from 'commander';
 import { buildCli } from './cli.js';
+import { loadFeatures } from './features.js';
 import { writeError } from './output.js';
 
-const cli = buildCli();
+const baseUrl = process.env.INDICIA_API_URL ?? 'https://api.indicia.app';
+const features = await loadFeatures(baseUrl);
+const cli = buildCli(features);
 
 try {
   await cli.parseAsync(process.argv);

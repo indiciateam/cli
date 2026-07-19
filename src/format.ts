@@ -76,10 +76,14 @@ function colorizeJson(json: string): string {
 }
 
 function genericFormatter(data: unknown): string {
-  return formatValue(data, 0);
+  return formatValue(data, 0, new WeakSet());
 }
 
-function formatValue(value: unknown, depth: number): string {
+function formatValue(
+  value: unknown,
+  depth: number,
+  seen: WeakSet<object>,
+): string {
   if (value === null || value === undefined) {
     return colorize('—', 'gray');
   }
@@ -98,12 +102,9 @@ function formatValue(value: unknown, depth: number): string {
 
   if (Array.isArray(value)) {
     if (value.length === 0) return colorize('[]', 'gray');
-    if (depth >= 2) {
-      return colorize(`[${value.length} items]`, 'gray');
-    }
     const lines: string[] = [];
     for (let i = 0; i < value.length; i++) {
-      const item = formatValue(value[i], depth + 1);
+      const item = formatValue(value[i], depth + 1, seen);
       const prefix = depth === 0 ? `${colorize(String(i), 'cyan')}.` : '•';
       lines.push(`${'  '.repeat(depth)}${prefix} ${indent(item, depth + 1)}`);
     }
@@ -111,15 +112,14 @@ function formatValue(value: unknown, depth: number): string {
   }
 
   if (typeof value === 'object') {
+    if (seen.has(value)) return colorize('(circular)', 'gray');
+    seen.add(value);
     const entries = Object.entries(value);
     if (entries.length === 0) return colorize('{}', 'gray');
-    if (depth >= 3) {
-      return colorize(`{${entries.length} fields}`, 'gray');
-    }
     const lines: string[] = [];
     for (const [key, val] of entries) {
       if (val === undefined) continue;
-      const formatted = formatValue(val, depth + 1);
+      const formatted = formatValue(val, depth + 1, seen);
       const indented = indent(formatted, depth + 1);
       lines.push(`${'  '.repeat(depth)}${colorize(key, 'cyan')}: ${indented}`);
     }
@@ -182,7 +182,10 @@ function emailFormatter(data: unknown): string {
   }
   for (const r of results) {
     lines.push(
-      `  ${colorize(r.site ?? 'source', 'cyan')}: ${JSON.stringify(r.data)}`,
+      `  ${colorize(r.site ?? 'source', 'cyan')}: ${indent(
+        formatValue(r.data, 1, new WeakSet()),
+        1,
+      )}`,
     );
   }
   return lines.join('\n');

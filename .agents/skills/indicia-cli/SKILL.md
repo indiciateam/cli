@@ -1,6 +1,6 @@
 ---
 name: indicia-cli
-description: Use the Indicia CLI (`indicia`) to run OSINT searches against the Indicia API from scripts, automation, and agent workflows. Prefer the CLI for deterministic, repeatable searches over ad-hoc API calls.
+description: Use the Indicia CLI (`indicia`) to run searches against the Indicia API.
 disable-model-invocation: false
 ---
 
@@ -8,13 +8,12 @@ disable-model-invocation: false
 
 ## Purpose
 
-The Indicia CLI wraps the public Indicia API so agents and scripts can run OSINT searches consistently. It handles authentication, request routing, streaming Server-Sent Events, and JSON output for automation.
+The Indicia CLI wraps the public Indicia API. It handles authentication, request routing, streaming Server-Sent Events, JSON output, and formatted terminal output.
 
 ## When to use
 
-- Running a single OSINT search from a script or agent turn.
-- Batch automation where you need structured JSON output.
-- Any task where the user asks to "search Indicia", "run an OSINT lookup", or "use the Indicia CLI".
+- Running a single Indicia search from the terminal.
+- Any task where the user asks to "search Indicia", "run an Indicia lookup", or "use the Indicia CLI".
 
 ## Installation
 
@@ -36,7 +35,7 @@ Set the API key in the environment:
 export INDICIA_API_KEY="your-api-key"
 ```
 
-Create an API key at https://indicia.app/dashboard/account.
+Create a key at https://indicia.app/dashboard/account.
 
 Optional environment variables:
 
@@ -77,7 +76,9 @@ indicia search socials/username octocat
 
 | Flag | Description |
 |------|-------------|
-| `--body '<json>'` | Send a raw JSON body instead of `{ query }`. Required for tools with non-standard fields. |
+| `--body '<json>'` | Send a raw JSON body. |
+| `-p, --param <key=value>` | Set a body field (repeatable). |
+| `-y, --yes` | Skip the credit cost confirmation prompt. |
 | `-j, --json` | Emit JSON to stdout. |
 | `-o, --output <file>` | Write JSON output to a file. |
 | `-q, --quiet` | Suppress progress and info messages. |
@@ -86,9 +87,12 @@ indicia search socials/username octocat
 
 #### Feature-specific flags
 
-Tools expose their body fields as CLI flags. Prefer flags over `--body`:
+Endpoints expose their body fields as CLI flags. Prefer flags over `--body`:
 
 ```bash
+# Person search
+indicia search intelligence/person --name "John Doe" --state CA
+
 # Crypto address analysis
 indicia search tools/crypto --address 0xdAC17F958D2ee523a2206206994597C13D831ec7 --network ethereum
 
@@ -99,7 +103,7 @@ indicia search tools/intelx --storage-id <id> --bucket leaks.public
 indicia search tools/virustotal.download --id <file-id>
 ```
 
-Use `--body` only when no flag exists for a field.
+Use `--param key=value` or `--body` when no dedicated flag exists for a field.
 
 ## Streaming searches
 
@@ -109,7 +113,7 @@ Some endpoints (GitHub, Roblox, TikTok, Discord, and the v2 username search) str
 - Writes the terminal `result` or `all` event to stdout (or the file specified by `--output`).
 - Always exits non-zero if the stream emits an error event.
 
-For automation, combine `--json` with `--no-stream-progress`:
+For deterministic output, combine `--json` with `--no-stream-progress`:
 
 ```bash
 indicia search socials/github octocat --json --no-stream-progress
@@ -147,16 +151,7 @@ Exit codes:
 | `3` | API error |
 | `4` | Missing `INDICIA_API_KEY` |
 
-## Agent workflow
-
-1. Confirm `INDICIA_API_KEY` is set. If it is missing, stop and tell the user how to create one.
-2. If you are unsure which search module applies, run `indicia list --json`.
-3. For simple lookups, use `indicia search <category>/<name> <query> --json`.
-4. For tools or endpoints that need structured input, build a JSON body and use `--body`.
-5. Prefer `--json --no-stream-progress` in automation so output is deterministic and easy to parse.
-6. Check the exit code; on `3`, read the JSON error message and surface it concisely.
-
-## Safety notes
+## Notes
 
 - Do not commit API keys. Keep `INDICIA_API_KEY` in environment variables or a secrets manager.
 - The CLI performs searches that may return personal information. Only run searches the user has explicitly authorized.

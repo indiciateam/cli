@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-07-19
+
+### Added
+
+- Search endpoints now expose every request body field as a CLI flag, including multi-property searches.
+- `--param key=value` option for setting arbitrary body fields.
+- `-y, --yes` option to skip the credit cost confirmation prompt.
+- Credit cost confirmation before each search, using `/v1/pricing` and `/v1/info`.
+- Dynamic feature list loaded from `https://api.indicia.app/openapi` with a static fallback.
+- Multipart/form-data request support for media-based searches.
+- Nested arrays and objects are now fully expanded in formatted terminal output.
+
+### Changed
+
+- CLI descriptions and documentation now describe the tool as a CLI without alluding to specific use cases.
+
 ## [0.1.0] - 2026-07-19
 
 ### Added

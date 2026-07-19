@@ -1,7 +1,7 @@
 {
   "name": "@indiciaosint/cli",
   "version": "0.1.0",
-  "description": "CLI for Indicia OSINT automation",
+  "description": "Indicia CLI",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -60,7 +60,6 @@
     "indicia",
     "osint",
     "cli",
-    "automation",
     "search"
   ]
 }

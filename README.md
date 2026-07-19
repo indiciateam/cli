@@ -1,6 +1,6 @@
 # Indicia CLI
 
-A command-line interface for [Indicia](https://indicia.app) OSINT searches. Built for automation, scripts, and agent workflows.
+A command-line interface for [Indicia](https://indicia.app).
 
 ## Installation
 
@@ -18,7 +18,7 @@ Set your Indicia API key:
 export INDICIA_API_KEY="your-api-key"
 ```
 
-You can create an API key at [indicia.app/dashboard/account](https://indicia.app/dashboard/account).
+You can create a key at [indicia.app/dashboard/account](https://indicia.app/dashboard/account).
 
 Optionally override the API base URL:
 
@@ -48,27 +48,40 @@ indicia search infrastructure/ipinfo 1.1.1.1
 indicia search intelligence/email user@example.com
 ```
 
-### JSON output for automation
+### Multi-property searches
+
+Searches that need more than one property expose each field as a flag:
 
 ```bash
-indicia search socials/github octocat --json
-indicia search infrastructure/ipinfo 1.1.1.1 --output result.json
-```
-
-### Feature-specific flags
-
-Tools and some endpoints expose their body fields as CLI flags:
-
-```bash
+indicia search intelligence/person --name "John Doe" --state CA
+indicia search intelligence/address --address1 "123 Main St" --city "New York" --state NY --zip 10001
 indicia search tools/crypto --address 0xdAC17F958D2ee523a2206206994597C13D831ec7 --network ethereum
 indicia search tools/intelx --storage-id <id> --bucket leaks.public
 indicia search tools/virustotal.download --id <file-id>
 ```
 
-For fields without a dedicated flag, or for advanced use, pass a raw JSON body:
+For fields without a dedicated flag, or for advanced use, pass `--param key=value` or a raw JSON body:
 
 ```bash
+indicia search tools/crypto --param address=0xdAC17F958D2ee523a2206206994597C13D831ec7 --param network=ethereum
 indicia search tools/crypto --body '{"address":"0xdAC17F958D2ee523a2206206994597C13D831ec7","network":"ethereum"}'
+```
+
+### Cost confirmation
+
+By default `indicia search` shows the credit cost and asks for confirmation before running. To skip the prompt, pass `--yes`:
+
+```bash
+indicia search socials/github octocat --yes
+```
+
+Non-interactive environments (for example, CI) print the cost and continue without prompting.
+
+### JSON output and file output
+
+```bash
+indicia search socials/github octocat --json
+indicia search infrastructure/ipinfo 1.1.1.1 --output result.json
 ```
 
 ### Streaming searches
@@ -76,7 +89,7 @@ indicia search tools/crypto --body '{"address":"0xdAC17F958D2ee523a2206206994597
 Searches that return Server-Sent Events are streamed to stderr as progress updates and the final result is written to stdout:
 
 ```bash
-indicia search socials/github octocat --json
+indicia search socials/github octocat --json --no-stream-progress
 ```
 
 ## Exit codes

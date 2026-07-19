@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { basename, resolve } from 'node:path';
 import { loadConfig } from './config.js';
 import type { Feature } from './features.js';
 
@@ -41,6 +43,12 @@ export interface SearchResult {
   events?: SseEvent[];
 }
 
+export interface PricingResponse {
+  success: boolean;
+  current: number;
+  prices: Record<string, number>;
+}
+
 function getHeaders(): Record<string, string> {
   const { apiKey } = loadConfig();
   return {
@@ -63,12 +71,25 @@ export async function getInfo(): Promise<unknown> {
   return parseResponse(res);
 }
 
+export async function getPricing(): Promise<PricingResponse> {
+  const res = await fetch(`${getBaseUrl()}/v1/pricing`, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+  return parseResponse(res) as Promise<PricingResponse>;
+}
+
 export async function search(options: SearchOptions): Promise<SearchResult> {
   const { feature, body, onStreamEvent } = options;
+  const isMultipart = feature.contentType === 'multipart/form-data';
+  const { headers, requestBody } = isMultipart
+    ? await buildMultipartRequest(feature, body)
+    : { headers: getHeaders(), requestBody: JSON.stringify(body) };
+
   const res = await fetch(`${getBaseUrl()}${feature.path}`, {
     method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify(body),
+    headers,
+    body: requestBody,
   });
 
   const contentType = res.headers.get('content-type') ?? '';
@@ -78,6 +99,32 @@ export async function search(options: SearchOptions): Promise<SearchResult> {
 
   const data = await parseResponse(res);
   return data as SearchResult;
+}
+
+async function buildMultipartRequest(
+  feature: Feature,
+  body: Record<string, unknown>,
+): Promise<{ headers: Record<string, string>; requestBody: FormData }> {
+  const { apiKey } = loadConfig();
+  const headers: Record<string, string> = {
+    'x-api-key': apiKey,
+    accept: 'application/json, text/event-stream',
+  };
+  const data = new FormData();
+
+  for (const [field, value] of Object.entries(body)) {
+    const flag = feature.flags?.[field];
+    if (flag?.format === 'binary' && typeof value === 'string') {
+      const path = resolve(value);
+      const file = await readFile(path);
+      const filename = basename(path);
+      data.append(field, new Blob([file]), filename);
+    } else if (value !== undefined) {
+      data.append(field, String(value));
+    }
+  }
+
+  return { headers, requestBody: data };
 }
 
 async function parseResponse(res: Response): Promise<unknown> {
