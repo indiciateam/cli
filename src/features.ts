@@ -92,6 +92,22 @@ const fallbackFeatures: Feature[] = [
     flags: { query: { name: 'query', description: 'Search query' } },
   },
   {
+    name: 'wifi-network-map',
+    category: 'intelligence',
+    path: '/v1/search/intelligence/wifi-network-map',
+    version: 1,
+    streaming: false,
+    description: 'Geolocate Wi-Fi access points by BSSID using Apple WLOC',
+    priceKey: 'wifi-network-map',
+    bodyFields: ['query'],
+    flags: {
+      query: {
+        name: 'query',
+        description: 'One or more BSSIDs separated by commas or newlines',
+      },
+    },
+  },
+  {
     name: 'person',
     category: 'intelligence',
     path: '/v1/search/intelligence/person',
@@ -404,6 +420,7 @@ const priceKeyByOperationId: Record<string, string> = {
   geolocateMedia: 'geolocation',
   searchGmail: 'gmail',
   searchHudsonRock: 'hudsonrock',
+  searchWifiNetworkMap: 'wifi-network-map',
   searchPerson: 'person',
   searchPhone: 'phone',
   searchSeon: 'seon',
