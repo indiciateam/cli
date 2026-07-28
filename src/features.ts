@@ -108,6 +108,22 @@ const fallbackFeatures: Feature[] = [
     },
   },
   {
+    name: 'location-to-bssid',
+    category: 'intelligence',
+    path: '/v1/search/intelligence/location-to-bssid',
+    version: 1,
+    streaming: false,
+    description: 'Find nearby Wi-Fi access points for a location',
+    priceKey: 'location-to-bssid',
+    bodyFields: ['query'],
+    flags: {
+      query: {
+        name: 'query',
+        description: 'GPS coordinates as "lat,lng" or a free-text address',
+      },
+    },
+  },
+  {
     name: 'person',
     category: 'intelligence',
     path: '/v1/search/intelligence/person',
@@ -421,6 +437,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchGmail: 'gmail',
   searchHudsonRock: 'hudsonrock',
   searchWifiNetworkMap: 'wifi-network-map',
+  searchLocationToBssid: 'location-to-bssid',
   searchPerson: 'person',
   searchPhone: 'phone',
   searchSeon: 'seon',
