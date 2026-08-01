@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-01
+
+### Added
+
+- `wayback` search: trace archived captures of a URL on the Wayback Machine, or read a specific capture (emails, secrets, subdomains, and other intelligence extracted from the archived page).
+- `reddit` search: query the Arctic Shift and PullPush Reddit archives for a user's posts or comments, including deleted and removed content, with cursor pagination via `--before`.
+
 ## [0.3.0] - 2026-07-28
 
 ### Added
