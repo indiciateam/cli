@@ -182,6 +182,38 @@ const fallbackFeatures: Feature[] = [
     flags: { query: { name: 'query', description: 'Search query' } },
   },
   {
+    name: 'wayback',
+    category: 'intelligence',
+    path: '/v1/search/intelligence/wayback',
+    version: 1,
+    streaming: false,
+    description:
+      'Trace and read archived captures of a URL on the Wayback Machine',
+    priceKey: 'wayback',
+    bodyFields: ['url', 'timestamp', 'limit', 'from', 'to'],
+    flags: {
+      url: { name: 'url', description: 'URL or domain to look up' },
+      timestamp: {
+        name: 'timestamp',
+        description:
+          'Read the specific capture at this Wayback timestamp (yyyyMMddhhmmss)',
+      },
+      limit: {
+        name: 'limit',
+        description: 'Maximum number of snapshots to return (default 200)',
+        type: 'number',
+      },
+      from: {
+        name: 'from',
+        description: 'Only captures from this date onward (yyyyMMddhhmmss)',
+      },
+      to: {
+        name: 'to',
+        description: 'Only captures up to this date (yyyyMMddhhmmss)',
+      },
+    },
+  },
+  {
     name: 'web-dbs',
     category: 'intelligence',
     path: '/v1/search/intelligence/web-dbs',
@@ -229,6 +261,40 @@ const fallbackFeatures: Feature[] = [
     priceKey: 'roblox',
     bodyFields: ['query'],
     flags: { query: { name: 'query', description: 'Roblox username or ID' } },
+  },
+  {
+    name: 'reddit',
+    category: 'socials',
+    path: '/v1/search/socials/reddit',
+    version: 1,
+    streaming: false,
+    description:
+      "Search Reddit archives for a user's posts and comments, including deleted and removed content",
+    priceKey: 'reddit',
+    bodyFields: ['author', 'type', 'subreddit', 'limit', 'before'],
+    flags: {
+      author: { name: 'author', description: 'Reddit username' },
+      type: {
+        name: 'type',
+        description: 'Whether to return posts or comments',
+        choices: ['posts', 'comments'],
+      },
+      subreddit: {
+        name: 'subreddit',
+        description: 'Restrict results to a single subreddit',
+      },
+      limit: {
+        name: 'limit',
+        description: 'Maximum number of items (default 1000, max 1000)',
+        type: 'number',
+      },
+      before: {
+        name: 'before',
+        description:
+          'Pagination cursor: only items older than this epoch-second timestamp',
+        type: 'number',
+      },
+    },
   },
   {
     name: 'tiktok',
@@ -443,8 +509,10 @@ const priceKeyByOperationId: Record<string, string> = {
   searchSeon: 'seon',
   virusTotalIntelligence: 'virustotal.intelligence',
   searchWebDatabases: 'web-dbs',
+  searchWayback: 'wayback',
   searchDiscord: 'discord',
   searchGithub: 'github',
+  searchReddit: 'reddit',
   searchRoblox: 'roblox',
   searchTiktok: 'tiktok',
   searchUsername: 'username',
