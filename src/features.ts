@@ -484,6 +484,20 @@ const fallbackFeatures: Feature[] = [
     },
   },
   {
+    name: 'link-resolver',
+    category: 'tools',
+    path: '/v1/tools/link-resolver',
+    version: 1,
+    streaming: false,
+    description:
+      'Resolve a TikTok or Instagram share link to identify the user who shared it',
+    priceKey: 'link-resolver',
+    bodyFields: ['url'],
+    flags: {
+      url: { name: 'url', description: 'TikTok or Instagram share link' },
+    },
+  },
+  {
     name: 'virustotal.download',
     category: 'tools',
     path: '/v1/tools/virustotal',
@@ -528,6 +542,7 @@ const priceKeyByOperationId: Record<string, string> = {
   lookupDiscordAlt: 'doogle',
   bypassDoubleCounter: 'doublecounter',
   downloadIntelxFile: 'intelx',
+  resolveLink: 'link-resolver',
   downloadVirusTotalFile: 'virustotal.download',
   searchFace: 'pimeyes',
 };
