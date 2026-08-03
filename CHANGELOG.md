@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-08-03
+
+### Added
+
+- `--enhanced` flag for the `person`, `address`, `phone`, and `email` searches: adds more results and associated people (+2 credits per lookup).
+
 ## [0.5.0] - 2026-08-02
 
 ### Added
