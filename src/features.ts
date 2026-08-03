@@ -47,6 +47,11 @@ const fallbackFeatures: Feature[] = [
       state: { name: 'state', description: 'State' },
       zip: { name: 'zip', description: 'ZIP code' },
       address2: { name: 'address2', description: 'Street address line 2' },
+      enhanced: {
+        name: 'enhanced',
+        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        type: 'boolean',
+      },
     },
   },
   {
@@ -58,7 +63,14 @@ const fallbackFeatures: Feature[] = [
     description: 'Search for individuals by email address',
     priceKey: 'email',
     bodyFields: ['query'],
-    flags: { query: { name: 'query', description: 'Email address' } },
+    flags: {
+      query: { name: 'query', description: 'Email address' },
+      enhanced: {
+        name: 'enhanced',
+        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        type: 'boolean',
+      },
+    },
   },
   {
     name: 'geolocation',
@@ -136,6 +148,11 @@ const fallbackFeatures: Feature[] = [
       name: { name: 'name', description: 'Full name' },
       city: { name: 'city', description: 'City' },
       state: { name: 'state', description: 'State' },
+      enhanced: {
+        name: 'enhanced',
+        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        type: 'boolean',
+      },
     },
   },
   {
@@ -147,7 +164,14 @@ const fallbackFeatures: Feature[] = [
     description: 'Advanced phone number investigation and carrier intelligence',
     priceKey: 'phone',
     bodyFields: ['query'],
-    flags: { query: { name: 'query', description: 'Phone number' } },
+    flags: {
+      query: { name: 'query', description: 'Phone number' },
+      enhanced: {
+        name: 'enhanced',
+        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        type: 'boolean',
+      },
+    },
   },
   {
     name: 'pimeyes',
