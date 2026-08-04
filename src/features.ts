@@ -346,6 +346,19 @@ const fallbackFeatures: Feature[] = [
     bodyFields: ['query'],
     flags: { query: { name: 'query', description: 'Xbox Live gamertag' } },
   },
+  {
+    name: 'playstation',
+    category: 'socials',
+    path: '/v1/search/socials/playstation',
+    version: 1,
+    streaming: false,
+    description: 'Lookup a PlayStation Network profile by online ID',
+    priceKey: 'playstation',
+    bodyFields: ['query'],
+    flags: {
+      query: { name: 'query', description: 'PlayStation Network online ID' },
+    },
+  },
 
   // v2 socials
   {
@@ -569,6 +582,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchRoblox: 'roblox',
   searchTiktok: 'tiktok',
   searchXbox: 'xbox',
+  searchPlaystation: 'playstation',
   searchUsername: 'username',
   searchCertificates: 'certificates',
   searchDns: 'dnsdumpster',
