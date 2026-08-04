@@ -49,7 +49,8 @@ const fallbackFeatures: Feature[] = [
       address2: { name: 'address2', description: 'Street address line 2' },
       enhanced: {
         name: 'enhanced',
-        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        description:
+          'Enhanced mode: adds more results and associated people (+2 credits)',
         type: 'boolean',
       },
     },
@@ -67,7 +68,8 @@ const fallbackFeatures: Feature[] = [
       query: { name: 'query', description: 'Email address' },
       enhanced: {
         name: 'enhanced',
-        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        description:
+          'Enhanced mode: adds more results and associated people (+2 credits)',
         type: 'boolean',
       },
     },
@@ -150,7 +152,8 @@ const fallbackFeatures: Feature[] = [
       state: { name: 'state', description: 'State' },
       enhanced: {
         name: 'enhanced',
-        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        description:
+          'Enhanced mode: adds more results and associated people (+2 credits)',
         type: 'boolean',
       },
     },
@@ -168,7 +171,8 @@ const fallbackFeatures: Feature[] = [
       query: { name: 'query', description: 'Phone number' },
       enhanced: {
         name: 'enhanced',
-        description: 'Enhanced mode: adds more results and associated people (+2 credits)',
+        description:
+          'Enhanced mode: adds more results and associated people (+2 credits)',
         type: 'boolean',
       },
     },
@@ -330,6 +334,17 @@ const fallbackFeatures: Feature[] = [
     priceKey: 'tiktok',
     bodyFields: ['query'],
     flags: { query: { name: 'query', description: 'TikTok username' } },
+  },
+  {
+    name: 'xbox',
+    category: 'socials',
+    path: '/v1/search/socials/xbox',
+    version: 1,
+    streaming: false,
+    description: 'Lookup an Xbox Live profile by gamertag',
+    priceKey: 'xbox',
+    bodyFields: ['query'],
+    flags: { query: { name: 'query', description: 'Xbox Live gamertag' } },
   },
 
   // v2 socials
@@ -553,6 +568,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchReddit: 'reddit',
   searchRoblox: 'roblox',
   searchTiktok: 'tiktok',
+  searchXbox: 'xbox',
   searchUsername: 'username',
   searchCertificates: 'certificates',
   searchDns: 'dnsdumpster',
