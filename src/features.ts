@@ -359,6 +359,22 @@ const fallbackFeatures: Feature[] = [
       query: { name: 'query', description: 'PlayStation Network online ID' },
     },
   },
+  {
+    name: 'epic',
+    category: 'socials',
+    path: '/v1/search/socials/epic',
+    version: 1,
+    streaming: false,
+    description: 'Lookup an Epic Games account by display name or account ID',
+    priceKey: 'epic',
+    bodyFields: ['query'],
+    flags: {
+      query: {
+        name: 'query',
+        description: 'Epic Games display name or 32-char account ID',
+      },
+    },
+  },
 
   // v2 socials
   {
@@ -583,6 +599,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchTiktok: 'tiktok',
   searchXbox: 'xbox',
   searchPlaystation: 'playstation',
+  searchEpic: 'epic',
   searchUsername: 'username',
   searchCertificates: 'certificates',
   searchDns: 'dnsdumpster',
