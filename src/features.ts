@@ -375,6 +375,22 @@ const fallbackFeatures: Feature[] = [
       },
     },
   },
+  {
+    name: 'steam',
+    category: 'socials',
+    path: '/v1/search/socials/steam',
+    version: 1,
+    streaming: false,
+    description: 'Lookup a Steam profile by vanity URL or SteamID64',
+    priceKey: 'steam',
+    bodyFields: ['query'],
+    flags: {
+      query: {
+        name: 'query',
+        description: 'Steam vanity URL name, SteamID64, or profile URL',
+      },
+    },
+  },
 
   // v2 socials
   {
@@ -600,6 +616,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchXbox: 'xbox',
   searchPlaystation: 'playstation',
   searchEpic: 'epic',
+  searchSteam: 'steam',
   searchUsername: 'username',
   searchCertificates: 'certificates',
   searchDns: 'dnsdumpster',
