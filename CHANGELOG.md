@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-08-05
+
+### Added
+
+- `steam` search: full Steam profile lookup by vanity URL, SteamID64, or profile URL — level, XP, badges, owned games with playtime, recently played, friends, and VAC/game/community/economy ban status.
+- `epic` search: Epic Games account lookup by display name or account ID — Fortnite lifetime stats with per-queue and ranked breakdowns, battle pass level history, creator pages (followers, socials), and published islands.
+
+## [0.7.0] - 2026-08-04
+
+### Added
+
+- `xbox` search: Xbox Live profile lookup by gamertag — gamerscore, XUID, presence, tenure, reputation, recent title history with per-game achievement lists and minutes played, and friends.
+- `playstation` search: PlayStation Network profile lookup by online ID — trophy level/tier/counts, trophy title history with per-title trophy lists, PS Plus, presence, and account ID resolution.
+
 ## [0.6.0] - 2026-08-03
 
 ### Added
