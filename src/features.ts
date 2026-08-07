@@ -407,6 +407,34 @@ const fallbackFeatures: Feature[] = [
 
   // v1 infrastructure
   {
+    name: 'celltower',
+    category: 'infrastructure',
+    path: '/v1/search/infrastructure/celltower',
+    version: 1,
+    streaming: false,
+    description: 'Geolocate a cell tower by MCC, MNC, Cell ID and TAC',
+    priceKey: 'celltower',
+    bodyFields: ['mcc', 'mnc', 'cellId', 'tacId'],
+    flags: {
+      mcc: { name: 'mcc', type: 'number', description: 'Mobile Country Code' },
+      mnc: { name: 'mnc', type: 'number', description: 'Mobile Network Code' },
+      cellId: {
+        name: 'cell-id',
+        optionKey: 'cellId',
+        type: 'number',
+        path: ['cellId'],
+        description: 'Cell ID (CID)',
+      },
+      tacId: {
+        name: 'tac-id',
+        optionKey: 'tacId',
+        type: 'number',
+        path: ['tacId'],
+        description: 'Tracking Area Code (TAC/LAC)',
+      },
+    },
+  },
+  {
     name: 'certificates',
     category: 'infrastructure',
     path: '/v1/search/infrastructure/certificates',
@@ -618,6 +646,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchEpic: 'epic',
   searchSteam: 'steam',
   searchUsername: 'username',
+  searchCellTower: 'celltower',
   searchCertificates: 'certificates',
   searchDns: 'dnsdumpster',
   searchIpInfo: 'ipinfo',
