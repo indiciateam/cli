@@ -69,9 +69,6 @@ Some endpoints require arrays or objects. `--param` accepts JSON literals, so yo
 can pass them without writing a full `--body`:
 
 ```bash
-# Port scan with ping disabled
-indicia search infrastructure/portscan scanme.nmap.org --param options='{"skipPing":true}'
-
 # Hudson Rock domain lookup
 indicia search intelligence/hudsonrock bcps.org --type domain
 

@@ -105,8 +105,6 @@ indicia search tools/intelx --storage-id <id> --bucket leaks.public
 # VirusTotal download
 indicia search tools/virustotal.download --id <file-id>
 
-# Port scan with ping disabled
-indicia search infrastructure/portscan scanme.nmap.org --param options='{"skipPing":true}'
 
 # Hudson Rock domain lookup
 indicia search intelligence/hudsonrock bcps.org --type domain
