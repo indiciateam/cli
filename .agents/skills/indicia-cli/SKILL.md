@@ -29,7 +29,10 @@ After install, run commands with `indicia`.
 
 ## Configuration
 
-Set the API key in the environment:
+Prefer `indicia login` (device code) or `indicia login --browser`. The CLI
+stores a token in `~/.config/indicia/credentials.json`.
+
+For CI, set an API key instead:
 
 ```bash
 export INDICIA_API_KEY="your-api-key"
@@ -40,8 +43,18 @@ Create a key at https://indicia.app/dashboard/account.
 Optional environment variables:
 
 - `INDICIA_API_URL` — override the API base URL (default `https://api.indicia.app`).
+- `INDICIA_AUTH_URL` — override the auth server (default `https://indicia.app`).
 
 ## Core commands
+
+### `indicia login`
+
+Sign in with a device code (default) or `--browser` for the OAuth
+authorization-code flow. Saves a token to the credentials file.
+
+### `indicia logout`
+
+Remove saved OAuth credentials. Does not revoke an `INDICIA_API_KEY`.
 
 ### `indicia list`
 
@@ -171,10 +184,10 @@ Exit codes:
 | `1` | General error |
 | `2` | Invalid usage / unknown feature |
 | `3` | API error |
-| `4` | Missing `INDICIA_API_KEY` |
+| `4` | Not authenticated (run `indicia login` or set `INDICIA_API_KEY`) |
 
 ## Notes
 
-- Do not commit API keys. Keep `INDICIA_API_KEY` in environment variables or a secrets manager.
+- Do not commit API keys or saved tokens.
 - The CLI performs searches that may return personal information. Only run searches the user has explicitly authorized.
 - Each search consumes Indicia credits according to the user's plan and key permissions.

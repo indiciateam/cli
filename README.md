@@ -12,18 +12,40 @@ pnpm add -g @indiciaosint/cli
 
 ## Configuration
 
-Set your Indicia API key:
+### Sign in (recommended)
+
+```bash
+indicia login
+```
+
+This starts a device-code flow: the CLI prints a link (and tries to open
+your browser). Approve the request at [indicia.app/device](https://indicia.app/device),
+and the CLI stores a token in `~/.config/indicia/credentials.json`.
+
+Use the same web authorization-code flow with a localhost callback:
+
+```bash
+indicia login --browser
+```
+
+Sign out with `indicia logout`.
+
+### API key
+
+For CI and scripts, set an API key instead. It overrides a saved login:
 
 ```bash
 export INDICIA_API_KEY="your-api-key"
 ```
 
-You can create a key at [indicia.app/dashboard/account](https://indicia.app/dashboard/account).
+Create a key at [indicia.app/dashboard/account](https://indicia.app/dashboard/account).
 
-Optionally override the API base URL:
+Optional environment variables:
 
 ```bash
 export INDICIA_API_URL="https://api.indicia.app"
+export INDICIA_AUTH_URL="https://indicia.app"
+export INDICIA_CONFIG_DIR="$HOME/.config/indicia"
 ```
 
 ## Usage
@@ -131,7 +153,7 @@ indicia search socials/github octocat --json --no-stream-progress
 | 1    | General error    |
 | 2    | Invalid usage    |
 | 3    | API error        |
-| 4    | Configuration error (missing API key) |
+| 4    | Configuration error (not authenticated) |
 
 ## Releasing
 

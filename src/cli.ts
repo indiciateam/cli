@@ -2,6 +2,8 @@ import { createRequire } from 'node:module';
 import { Command } from 'commander';
 import { infoCommand } from './commands/info.js';
 import { listCommand } from './commands/list.js';
+import { loginCommand } from './commands/login.js';
+import { logoutCommand } from './commands/logout.js';
 import { searchCommand } from './commands/search.js';
 import { ConfigError, loadConfig } from './config.js';
 import { type Feature, findFeature } from './features.js';
@@ -106,8 +108,26 @@ export function buildCli(features: Feature[]): Command {
     .exitOverride();
 
   program
+    .command('login')
+    .description('Sign in with a browser link or device code')
+    .option(
+      '--browser',
+      'Use the OAuth authorization-code flow with a localhost callback',
+    )
+    .action(async options => {
+      await loginCommand(options);
+    });
+
+  program
+    .command('logout')
+    .description('Remove saved OAuth credentials')
+    .action(async () => {
+      await logoutCommand();
+    });
+
+  program
     .command('info')
-    .description('Get information about the authenticated user and API key')
+    .description('Get information about the authenticated user')
     .option('-j, --json', 'Output as JSON')
     .option('-q, --quiet', 'Suppress non-essential output')
     .action(async options => {

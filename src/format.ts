@@ -157,18 +157,24 @@ function infoFormatter(data: unknown): string {
     labelValue('Email', d.user?.email),
     labelValue('Role', d.user?.role),
     labelValue('Credits', d.user?.tokens?.toLocaleString()),
-    '',
-    colorize('API Key', 'bold'),
-    labelValue('Name', d.key?.name),
-    labelValue('Key', d.key?.start ? `${d.key.start}…` : undefined),
-    labelValue(
-      'Rate limit',
-      d.key?.rateLimitMax && d.key?.rateLimitTimeWindow
-        ? `${d.key.rateLimitMax} req / ${d.key.rateLimitTimeWindow / 1000}s`
-        : undefined,
-    ),
-    labelValue('Requests made', d.key?.requestCount?.toLocaleString()),
   ];
+  if (d.key?.name || d.key?.start) {
+    lines.push(
+      '',
+      colorize('API Key', 'bold'),
+      labelValue('Name', d.key?.name),
+      labelValue('Key', d.key?.start ? `${d.key.start}…` : undefined),
+      labelValue(
+        'Rate limit',
+        d.key?.rateLimitMax && d.key?.rateLimitTimeWindow
+          ? `${d.key.rateLimitMax} req / ${d.key.rateLimitTimeWindow / 1000}s`
+          : undefined,
+      ),
+      labelValue('Requests made', d.key?.requestCount?.toLocaleString()),
+    );
+  } else {
+    lines.push('', colorize('Auth', 'bold'), labelValue('Method', 'OAuth'));
+  }
   return lines.join('\n');
 }
 

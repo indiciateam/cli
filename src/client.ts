@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
-import { loadConfig } from './config.js';
+import { authHeaders, loadConfig } from './config.js';
 import type { Feature } from './features.js';
 
 export interface ApiError {
@@ -80,10 +80,9 @@ export interface PricingResponse {
 }
 
 function getHeaders(): Record<string, string> {
-  const { apiKey } = loadConfig();
   return {
     'content-type': 'application/json',
-    'x-api-key': apiKey,
+    ...authHeaders(),
     accept: 'application/json, text/event-stream',
   };
 }
@@ -154,9 +153,8 @@ async function buildMultipartRequest(
   feature: Feature,
   body: Record<string, unknown>,
 ): Promise<{ headers: Record<string, string>; requestBody: FormData }> {
-  const { apiKey } = loadConfig();
   const headers: Record<string, string> = {
-    'x-api-key': apiKey,
+    ...authHeaders(),
     accept: 'application/json, text/event-stream',
   };
   const data = new FormData();
