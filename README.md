@@ -159,10 +159,15 @@ indicia search socials/github octocat --json --no-stream-progress
 
 This package is published to npm as `@indiciaosint/cli`.
 
+A daily `Regen` workflow (00:00 UTC, also `workflow_dispatch`) pulls
+`https://api.indicia.app/openapi`, rewrites
+`src/fallback-features.generated.ts`, and if the fallback changed (or regen
+was forced) patch-bumps, tags `vX.Y.Z`, and publishes. Same shape as
+[`@indiciaosint/sdk`](https://www.npmjs.com/package/@indiciaosint/sdk).
+
 ```bash
-pnpm version [patch|minor|major]
-git push --follow-tags
+pnpm sync-fallback   # regenerate fallback features from live OpenAPI
 ```
 
-The GitHub Actions `release.yml` workflow publishes automatically when a `v*` tag
-is pushed.
+Manual publish still works: `pnpm version [patch|minor|major] && git push --follow-tags`.
+The `release.yml` workflow publishes when a `v*` tag or GitHub release is created.

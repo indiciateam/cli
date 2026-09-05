@@ -188,6 +188,7 @@ Exit codes:
 
 ## Notes
 
+- Feature names come from the live OpenAPI spec, with a generated fallback at `src/fallback-features.generated.ts`. Do not hand-edit that file; run `pnpm sync-fallback`.
 - Do not commit API keys or saved tokens.
 - The CLI performs searches that may return personal information. Only run searches the user has explicitly authorized.
 - Each search consumes Indicia credits according to the user's plan and key permissions.
