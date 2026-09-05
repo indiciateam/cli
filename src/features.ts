@@ -336,6 +336,27 @@ const fallbackFeatures: Feature[] = [
     flags: { query: { name: 'query', description: 'TikTok username' } },
   },
   {
+    name: 'instagram',
+    category: 'socials',
+    path: '/v1/search/socials/instagram',
+    version: 1,
+    streaming: false,
+    description: 'Lookup an Instagram account, followers, and following',
+    priceKey: 'instagram',
+    bodyFields: ['query', 'cookie'],
+    flags: {
+      query: {
+        name: 'query',
+        description: 'Instagram username or profile URL',
+      },
+      cookie: {
+        name: 'cookie',
+        description:
+          'Optional Instagram session cookie for private followers/following',
+      },
+    },
+  },
+  {
     name: 'xbox',
     category: 'socials',
     path: '/v1/search/socials/xbox',
@@ -630,6 +651,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchReddit: 'reddit',
   searchRoblox: 'roblox',
   searchTiktok: 'tiktok',
+  searchInstagram: 'instagram',
   searchXbox: 'xbox',
   searchPlaystation: 'playstation',
   searchEpic: 'epic',
