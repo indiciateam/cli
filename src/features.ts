@@ -479,6 +479,42 @@ const fallbackFeatures: Feature[] = [
     flags: { query: { name: 'query', description: 'Shodan query' } },
   },
   {
+    name: 'ai-infra',
+    category: 'infrastructure',
+    path: '/v1/search/infrastructure/ai-infra',
+    version: 1,
+    streaming: false,
+    description:
+      'Discover publicly indexed AI/ML endpoints via curated Shodan queries',
+    priceKey: 'ai-infra',
+    bodyFields: ['preset', 'scope'],
+    flags: {
+      preset: {
+        name: 'preset',
+        description:
+          'AI service family (mcp, ollama, openai_compat, langserve, openclaw, chat_ui, gradio, streamlit, image_gen, huggingface, inference)',
+        choices: [
+          'mcp',
+          'ollama',
+          'openai_compat',
+          'langserve',
+          'openclaw',
+          'chat_ui',
+          'gradio',
+          'streamlit',
+          'image_gen',
+          'huggingface',
+          'inference',
+        ],
+      },
+      scope: {
+        name: 'scope',
+        description:
+          'Optional extra Shodan filters (country:US, org:Amazon, net:1.2.3.0/24)',
+      },
+    },
+  },
+  {
     name: 'virustotal.content',
     category: 'infrastructure',
     path: '/v1/search/infrastructure/virustotal',
@@ -640,6 +676,7 @@ const priceKeyByOperationId: Record<string, string> = {
   searchDns: 'dnsdumpster',
   searchIpInfo: 'ipinfo',
   searchShodan: 'shodan',
+  searchAiInfra: 'ai-infra',
   virusTotalContent: 'virustotal.content',
   searchWhois: 'whois',
   searchAppStore: 'appstore',
