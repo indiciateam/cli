@@ -369,7 +369,6 @@ export const fallbackFeatures: Feature[] = [
           'lastip',
           'name',
           'password',
-          'phone',
           'username',
           'wildcard',
         ],
