@@ -349,6 +349,35 @@ export const fallbackFeatures: Feature[] = [
     priceKey: 'web-dbs',
   },
   {
+    name: 'arrests.face',
+    category: 'intelligence',
+    path: '/v1/search/intelligence/facial/arrests',
+    version: 1,
+    streaming: false,
+    description: 'Arrests.org Face Search',
+    contentType: 'multipart/form-data',
+    bodyFields: ['media', 'zip'],
+    flags: {
+      media: {
+        name: 'media',
+        optionKey: 'media',
+        description:
+          'The image file to analyze. Maximum size 5 MB. Format: binary',
+        format: 'binary',
+        type: 'string',
+        path: ['media'],
+      },
+      zip: {
+        name: 'zip',
+        optionKey: 'zip',
+        description: 'Optional US ZIP code filter.',
+        type: 'string',
+        path: ['zip'],
+      },
+    },
+    priceKey: 'arrests.face',
+  },
+  {
     name: 'pimeyes',
     category: 'intelligence',
     path: '/v1/search/intelligence/facial',

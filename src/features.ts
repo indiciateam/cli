@@ -31,6 +31,7 @@ export interface Feature {
 
 const priceKeyByOperationId: Record<string, string> = {
   searchAddress: 'address',
+  searchArrestsFace: 'arrests.face',
   searchEmail: 'email',
   geolocateMedia: 'geolocation',
   searchGmail: 'gmail',
