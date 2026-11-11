@@ -1512,7 +1512,16 @@ export const fallbackFeatures: Feature[] = [
     streaming: false,
     description: 'Reddit Intel Search',
     contentType: 'application/json',
-    bodyFields: ['author', 'type', 'before', 'limit', 'subreddit'],
+    bodyFields: [
+      'author',
+      'type',
+      'after',
+      'before',
+      'interactions',
+      'limit',
+      'minCount',
+      'subreddit',
+    ],
     flags: {
       author: {
         name: 'author',
@@ -1529,6 +1538,13 @@ export const fallbackFeatures: Feature[] = [
         path: ['type'],
         choices: ['comments', 'posts'],
       },
+      after: {
+        name: 'after',
+        optionKey: 'after',
+        description: 'Request body field: after',
+        type: 'number',
+        path: ['after'],
+      },
       before: {
         name: 'before',
         optionKey: 'before',
@@ -1537,12 +1553,26 @@ export const fallbackFeatures: Feature[] = [
         type: 'number',
         path: ['before'],
       },
+      interactions: {
+        name: 'interactions',
+        optionKey: 'interactions',
+        description: 'Request body field: interactions',
+        type: 'boolean',
+        path: ['interactions'],
+      },
       limit: {
         name: 'limit',
         optionKey: 'limit',
         description: 'Maximum number of items (default 1000, max 1000)',
         type: 'number',
         path: ['limit'],
+      },
+      minCount: {
+        name: 'min-count',
+        optionKey: 'minCount',
+        description: 'Request body field: minCount',
+        type: 'number',
+        path: ['minCount'],
       },
       subreddit: {
         name: 'subreddit',
