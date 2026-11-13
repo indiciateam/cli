@@ -2031,6 +2031,26 @@ export const fallbackFeatures: Feature[] = [
     priceKey: 'dronebl',
   },
   {
+    name: 'onion-lookup',
+    category: 'infrastructure',
+    path: '/v1/search/infrastructure/onion-lookup',
+    version: 1,
+    streaming: false,
+    description: 'Onion-Lookup',
+    contentType: 'application/json',
+    bodyFields: ['query'],
+    flags: {
+      query: {
+        name: 'query',
+        optionKey: 'query',
+        description: 'Request body field: query',
+        type: 'string',
+        path: ['query'],
+      },
+    },
+    priceKey: 'onion-lookup',
+  },
+  {
     name: 'appstore',
     category: 'tools',
     path: '/v1/tools/appstore',
