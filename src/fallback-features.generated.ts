@@ -262,9 +262,7 @@ export const fallbackFeatures: Feature[] = [
     bodyFields: [
       'query',
       'services',
-      'cloudsintType',
       'horusType',
-      'intelxType',
       'leakCheckType',
       'snusbaseType',
     ],
@@ -283,14 +281,6 @@ export const fallbackFeatures: Feature[] = [
         type: 'array',
         path: ['services'],
       },
-      cloudsintType: {
-        name: 'cloudsint-type',
-        optionKey: 'cloudsintType',
-        description: 'Allowed: any, domain, email, ip',
-        type: 'string',
-        path: ['cloudsintType'],
-        choices: ['any', 'domain', 'email', 'ip'],
-      },
       horusType: {
         name: 'horus-type',
         optionKey: 'horusType',
@@ -298,14 +288,6 @@ export const fallbackFeatures: Feature[] = [
         type: 'string',
         path: ['horusType'],
         choices: ['domain', 'keyword', 'login', 'password'],
-      },
-      intelxType: {
-        name: 'intelx-type',
-        optionKey: 'intelxType',
-        description: 'Allowed: email, ip',
-        type: 'string',
-        path: ['intelxType'],
-        choices: ['email', 'ip'],
       },
       leakCheckType: {
         name: 'leak-check-type',
